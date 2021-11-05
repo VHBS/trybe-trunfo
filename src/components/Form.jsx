@@ -55,7 +55,11 @@ class Form extends React.Component {
           value={ cardImage }
           onChange={ onInputChange }
         />
-        <select data-testid="rare-input" value={ cardRare } onChange={ onInputChange }>
+        <select
+          data-testid="rare-input"
+          value={ cardRare }
+          onChange={ onInputChange }
+        >
           <option>normal</option>
           <option>raro</option>
           <option>muito raro</option>
