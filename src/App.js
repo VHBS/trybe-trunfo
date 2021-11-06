@@ -17,12 +17,15 @@ class App extends React.Component {
       isSaveButtonDisabled: true,
       savedCards: [],
       hasTrunfo: false,
+      filterCards: [],
+      filterCard: false,
     };
     this.checkInputsValues = this.checkInputsValues.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     this.checkAtributs = this.checkAtributs.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
+    this.filterCards = this.filterCards.bind(this);
   }
 
   // Função chamada a cada alteração dos imputs dentro do forms.
@@ -44,6 +47,7 @@ class App extends React.Component {
     event.preventDefault();
     const { cardName, cardDescription, cardAttr1, cardAttr2,
       cardAttr3, cardImage, cardRare, cardTrunfo } = this.state;
+      // Referencia para utilizar o parametro state: https://pt-br.reactjs.org/docs/react-component.html#setstate.
     this.setState((state) => ({ savedCards: [...state.savedCards,
       {
         cardName,
@@ -57,36 +61,42 @@ class App extends React.Component {
       }] }),
     () => {
       if (cardTrunfo) {
-        this.setState(
-          {
-            cardName: '',
-            cardDescription: '',
-            cardAttr1: '0',
-            cardAttr2: '0',
-            cardAttr3: '0',
-            cardImage: '',
-            cardRare: 'normal',
-            cardTrunfo: false,
-            isSaveButtonDisabled: true,
-            hasTrunfo: true,
-          },
-        );
-      } else {
-        this.setState(
-          {
-            cardName: '',
-            cardDescription: '',
-            cardAttr1: '0',
-            cardAttr2: '0',
-            cardAttr3: '0',
-            cardImage: '',
-            cardRare: 'normal',
-            cardTrunfo: false,
-            isSaveButtonDisabled: true,
-          },
-        );
+        this.setState({ hasTrunfo: true });
       }
+      this.setState(
+        {
+          cardName: '',
+          cardDescription: '',
+          cardAttr1: '0',
+          cardAttr2: '0',
+          cardAttr3: '0',
+          cardImage: '',
+          cardRare: 'normal',
+          cardTrunfo: false,
+          isSaveButtonDisabled: true,
+        },
+      );
     });
+  }
+
+  filterCards({ target: { value } }) {
+    console.log(value.length);
+    const { savedCards } = this.state;
+    if (value.length > 0) {
+      const teste = savedCards.filter((card) => card.cardName.includes(value));
+      console.log('entroi if');
+      this.setState({
+        filterCard: true,
+        filterCards: teste,
+      });
+    } else {
+      console.log('entrou else');
+      const airton = savedCards;
+      this.setState({
+        filterCard: false,
+        filterCards: airton,
+      });
+    }
   }
 
   // Checa se os valores dos 3 atributos estão corretos.
@@ -134,7 +144,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { savedCards } = this.state;
+    const { savedCards, filterCards, filterCard } = this.state;
     return (
       <div>
         <h1>Tryunfo</h1>
@@ -144,7 +154,11 @@ class App extends React.Component {
           onSaveButtonClick={ this.onSaveButtonClick }
         />
         <Card { ... this.state } />
-        { savedCards.map((card, index) => (
+        <div>
+          <input type="text" data-testid="name-filter" onChange={ this.filterCards } />
+          <button type="submit">Buscar</button>
+        </div>
+        { !filterCard ? savedCards.map((card, index) => (
           <div key={ card.cardName + index }>
             <Card { ... card } />
             <button
@@ -156,7 +170,20 @@ class App extends React.Component {
               Excluir
 
             </button>
-          </div>)) }
+          </div>))
+          : filterCards.map((card, index) => (
+            //
+            <div key={ card.cardName + index }>
+              <Card { ... card } />
+              <button
+                type="submit"
+                onClick={ this.deleteCard }
+                value={ index }
+                data-testid="delete-button"
+              >
+                Excluir
+              </button>
+            </div>))}
       </div>
     );
   }
