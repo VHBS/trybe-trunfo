@@ -8,14 +8,15 @@ class App extends React.Component {
     this.state = {
       cardName: '',
       cardDescription: '',
-      cardAttr1: '',
-      cardAttr2: '',
-      cardAttr3: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
+      cardAttr3: '0',
       cardImage: '',
       cardRare: 'normal',
       cardTrunfo: false,
       isSaveButtonDisabled: true,
       savedCards: [],
+      hasTrunfo: false,
     };
     this.checkInputsValues = this.checkInputsValues.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
@@ -37,58 +38,70 @@ class App extends React.Component {
       })));
   }
 
+  // Função para salvar as cartas em um array.
   onSaveButtonClick(event) {
     event.preventDefault();
-    const {
-      cardName,
-      cardDescription,
-      cardAttr1,
-      cardAttr2,
-      cardAttr3,
-      cardImage,
-      cardRare,
-    } = this.state;
-    this.setState((state) => ({ savedCards: [...state.savedCards, {
-      cardName,
-      cardDescription,
-      cardAttr1,
-      cardAttr2,
-      cardAttr3,
-      cardImage,
-      cardRare,
-    }] }), () => this.setState({
-      cardName: '',
-      cardDescription: '',
-      cardAttr1: '0',
-      cardAttr2: '0',
-      cardAttr3: '0',
-      cardImage: '',
-      cardRare: 'normal',
-      cardTrunfo: false,
-      isSaveButtonDisabled: true,
-    }));
+    const { cardName, cardDescription, cardAttr1, cardAttr2,
+      cardAttr3, cardImage, cardRare, cardTrunfo } = this.state;
+    this.setState((state) => ({ savedCards: [...state.savedCards,
+      {
+        cardName,
+        cardDescription,
+        cardAttr1,
+        cardAttr2,
+        cardAttr3,
+        cardImage,
+        cardRare,
+        cardTrunfo,
+      }] }),
+    () => {
+      if (cardTrunfo) {
+        this.setState(
+          {
+            cardName: '',
+            cardDescription: '',
+            cardAttr1: '0',
+            cardAttr2: '0',
+            cardAttr3: '0',
+            cardImage: '',
+            cardRare: 'normal',
+            cardTrunfo: false,
+            isSaveButtonDisabled: true,
+            hasTrunfo: true,
+          },
+        );
+      } else {
+        this.setState(
+          {
+            cardName: '',
+            cardDescription: '',
+            cardAttr1: '0',
+            cardAttr2: '0',
+            cardAttr3: '0',
+            cardImage: '',
+            cardRare: 'normal',
+            cardTrunfo: false,
+            isSaveButtonDisabled: true,
+          },
+        );
+      }
+    });
   }
 
   // Checa se os valores dos 3 atributos estão corretos.
   checkAtributs() {
     const { cardAttr1, cardAttr2, cardAttr3 } = this.state;
-
     const minIndividualValue = 0;
-
     const maxIndividualValue = 90;
-
     const maxSumValue = 210;
-
     const soma = (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3))
     <= maxSumValue;
-
     const valAtributs = minIndividualValue <= cardAttr1
     && minIndividualValue <= cardAttr2
     && minIndividualValue <= cardAttr3
     && cardAttr1 <= maxIndividualValue
     && cardAttr2 <= maxIndividualValue
     && cardAttr3 <= maxIndividualValue;
-
     return soma && valAtributs;
   }
 
@@ -108,7 +121,7 @@ class App extends React.Component {
           onInputChange={ this.onInputChange }
           onSaveButtonClick={ this.onSaveButtonClick }
         />
-        <Card { ... this.state } testePropsSeila="não sei" />
+        <Card { ... this.state } />
       </div>
     );
   }
