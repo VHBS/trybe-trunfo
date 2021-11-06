@@ -22,6 +22,7 @@ class App extends React.Component {
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     this.checkAtributs = this.checkAtributs.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
   }
 
   // Função chamada a cada alteração dos imputs dentro do forms.
@@ -112,6 +113,26 @@ class App extends React.Component {
     return arrayTest.every((val) => (val.length > 0));
   }
 
+  // Deleta a carta clicada.
+  deleteCard(event) {
+    event.preventDefault();
+    const { savedCards } = this.state;
+    const teste = savedCards.find((_card, index) => Number(index)
+    === Number(event.target.value));
+    if (teste.cardTrunfo) {
+      this.setState({
+        savedCards: savedCards.filter((_card, index) => Number(index)
+      !== Number(event.target.value)),
+        hasTrunfo: false,
+      });
+    } else {
+      this.setState({
+        savedCards: savedCards.filter((_card, index) => Number(index)
+      !== Number(event.target.value)),
+      });
+    }
+  }
+
   render() {
     const { savedCards } = this.state;
     return (
@@ -123,7 +144,19 @@ class App extends React.Component {
           onSaveButtonClick={ this.onSaveButtonClick }
         />
         <Card { ... this.state } />
-        { savedCards.map((card, index) => <Card key={ card + index } { ... card } />) }
+        { savedCards.map((card, index) => (
+          <div key={ card.cardName + index }>
+            <Card { ... card } />
+            <button
+              type="submit"
+              onClick={ this.deleteCard }
+              value={ index }
+              data-testid="delete-button"
+            >
+              Excluir
+
+            </button>
+          </div>)) }
       </div>
     );
   }
