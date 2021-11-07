@@ -19,6 +19,7 @@ class App extends React.Component {
       hasTrunfo: false,
       filterCards: [],
       filterCard: false,
+      filterCardRare: 'todas',
     };
     this.checkInputsValues = this.checkInputsValues.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
@@ -26,6 +27,7 @@ class App extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
     this.filterCards = this.filterCards.bind(this);
+    // this.testeFiltroRaridade = this.testeFiltroRaridade.bind(this);
   }
 
   // Função chamada a cada alteração dos imputs dentro do forms.
@@ -79,25 +81,40 @@ class App extends React.Component {
     });
   }
 
-  filterCards({ target: { value } }) {
-    console.log(value.length);
+  filterCards({ target: { value, id } }) {
     const { savedCards } = this.state;
-    if (value.length > 0) {
-      const teste = savedCards.filter((card) => card.cardName.includes(value));
-      console.log('entroi if');
-      this.setState({
-        filterCard: true,
-        filterCards: teste,
-      });
-    } else {
-      console.log('entrou else');
-      const airton = savedCards;
-      this.setState({
-        filterCard: false,
-        filterCards: airton,
-      });
+    if (id === 'filterName') {
+      if (value.length > 0) {
+        const teste = savedCards.filter((card) => card.cardName.includes(value));
+        this.setState({
+          filterCard: true,
+          filterCards: teste,
+        });
+      } else {
+        this.setState({
+          filterCard: false,
+          filterCards: savedCards,
+        });
+      }
+    } else if (id === 'filterRare') {
+      if (value !== 'todas') {
+        const teste = savedCards.filter((card) => card.cardRare === value);
+        this.setState({
+          filterCard: true,
+          filterCards: teste,
+        });
+      } else {
+        this.setState({
+          filterCard: false,
+          filterCards: savedCards,
+        });
+      }
     }
   }
+
+  // testeFiltroRaridade({ target: { value } }) {
+  //   console.log(value);
+  // }
 
   // Checa se os valores dos 3 atributos estão corretos.
   checkAtributs() {
@@ -153,10 +170,32 @@ class App extends React.Component {
           onInputChange={ this.onInputChange }
           onSaveButtonClick={ this.onSaveButtonClick }
         />
+        <br />
         <Card { ... this.state } />
+        <br />
         <div>
-          <input type="text" data-testid="name-filter" onChange={ this.filterCards } />
-          <button type="submit">Buscar</button>
+          <h3>Todas as cartas</h3>
+          <p>Filtros de busca</p>
+          <input
+            type="text"
+            data-testid="name-filter"
+            onChange={ this.filterCards }
+            placeholder=" Nome da carta"
+            id="filterName"
+          />
+          <br />
+          <select
+            data-testid="rare-filter"
+            onChange={ this.filterCards }
+            id="filterRare"
+          >
+            <option>todas</option>
+            <option>normal</option>
+            <option>raro</option>
+            <option>muito raro</option>
+          </select>
+          <br />
+          {/* <button type="submit">Buscar</button> */}
         </div>
         { !filterCard ? savedCards.map((card, index) => (
           <div key={ card.cardName + index }>
@@ -168,7 +207,6 @@ class App extends React.Component {
               data-testid="delete-button"
             >
               Excluir
-
             </button>
           </div>))
           : filterCards.map((card, index) => (

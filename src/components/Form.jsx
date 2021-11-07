@@ -27,6 +27,7 @@ class Form extends React.Component {
             value={ cardName }
             onChange={ onInputChange }
             id="cardName"
+            placeholder="Nome da carta"
           />
         </label>
         <br />
@@ -38,6 +39,7 @@ class Form extends React.Component {
             value={ cardDescription }
             onChange={ onInputChange }
             id="cardDescription"
+            placeholder="Descrição da carta"
           />
         </label>
         <br />
@@ -82,6 +84,7 @@ class Form extends React.Component {
             value={ cardImage }
             onChange={ onInputChange }
             id="cardImage"
+            placeholder="Url da imagem"
           />
         </label>
         <br />
