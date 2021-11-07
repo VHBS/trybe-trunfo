@@ -27,7 +27,6 @@ class App extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
     this.filterCards = this.filterCards.bind(this);
-    // this.testeFiltroRaridade = this.testeFiltroRaridade.bind(this);
   }
 
   // Função chamada a cada alteração dos imputs dentro do forms.
@@ -81,7 +80,7 @@ class App extends React.Component {
     });
   }
 
-  filterCards({ target: { value, id } }) {
+  filterCards({ target: { value, id, checked } }) {
     const { savedCards } = this.state;
     if (id === 'filterName') {
       if (value.length > 0) {
@@ -109,12 +108,23 @@ class App extends React.Component {
           filterCards: savedCards,
         });
       }
+    } else if (id === 'filterTrunfo') {
+      console.log('checked');
+      console.log(checked);
+      if (checked === true) {
+        const teste = savedCards.filter((card) => card.cardTrunfo === true);
+        this.setState({
+          filterCard: true,
+          filterCards: teste,
+        });
+      } else {
+        this.setState({
+          filterCard: false,
+          filterCards: savedCards,
+        });
+      }
     }
   }
-
-  // testeFiltroRaridade({ target: { value } }) {
-  //   console.log(value);
-  // }
 
   // Checa se os valores dos 3 atributos estão corretos.
   checkAtributs() {
@@ -194,6 +204,16 @@ class App extends React.Component {
             <option>raro</option>
             <option>muito raro</option>
           </select>
+          <br />
+          <label htmlFor="filterTrunfo">
+            Super Trunfo
+            <input
+              type="checkbox"
+              data-testid="trunfo-filter"
+              id="filterTrunfo"
+              onChange={ this.filterCards }
+            />
+          </label>
           <br />
           {/* <button type="submit">Buscar</button> */}
         </div>
